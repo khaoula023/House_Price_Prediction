@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from src.exception import CustomException
 from src.logger import logging
 from src.component.Data_transformation import DataTransformation
+from src.component.Model_training import ModelTrainer
 
 @dataclass
 class DataIngestionConfig:
@@ -45,6 +46,10 @@ class DataIngestion:
 if __name__ == "__main__":
     obj = DataIngestion()
     train_data, test_data = obj.get_data_ingestion()
+    
     data_transformation = DataTransformation()
     train_arr, test_arr,_ = data_transformation.transform(train_data, test_data)
     
+    model = ModelTrainer()
+    r2_score = model.train(train_arr, test_arr)
+    print(f'R2 score = {r2_score}')
