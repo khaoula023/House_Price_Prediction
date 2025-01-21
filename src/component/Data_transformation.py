@@ -26,14 +26,12 @@ class DataTransformation:
             categorical_features = ['Location', 'Condition', 'Garage']
             num_pipeline = Pipeline(
                 steps=[
-                    ("imputer", SimpleImputer(strategy="median")),
                     ("scaler", StandardScaler())
                 ]
             )
             
             cat_pipeline = Pipeline(
                 steps=[
-                    ("imputer", SimpleImputer(strategy="most_frequent")),
                     ("one_hot_encoder", OneHotEncoder())
                 ]
             )
@@ -55,6 +53,10 @@ class DataTransformation:
             logging.info('Read train and test :')
             train_df = pd.read_csv(train_path)
             test_df = pd.read_csv(test_path)
+            
+            logging.info('remove ID column')
+            train_df = train_df.drop(columns=['Id'], axis=1)
+            test_df = test_df.drop(columns=['Id'], axis=1)
             
             logging.info("Obtaining transformer object")
             transformer= self.get_transformer()
