@@ -14,6 +14,7 @@ from src.utils import save_object
 @dataclass
 class DataTransformationConfig:
     transformer_obj_file_path = os.path.join('artifacts', 'transformer.pkl')
+    target_transformer_obj_file_path = os.path.join('artifacts', 'target_transformer.pkl')
     
 class DataTransformation:
     def __init__(self):
@@ -61,15 +62,29 @@ class DataTransformation:
             logging.info("Obtaining transformer object")
             transformer= self.get_transformer()
             
-            logging.info("Applying transformer object on training dataframe and testing dataframe.")
-            train_arr=transformer.fit_transform(train_df)
-            test_arr=transformer.transform(test_df)
+            logging.info('Preparing the features and the target columns')
+            target = 'Price'
+            features_train_df = train_df.drop(columns=[target],axis=1)
+            target_train_df=train_df[[target]]
             
-            logging.info(f"Saved preprocessing object.")
-            save_object(
-                 file_path=self.data_transformation_config.transformer_obj_file_path,
-                 obj=transformer
-                 )
+            features_test_df=test_df.drop(columns=[target],axis=1)
+            target_test_df=test_df[[target]]
+            
+            logging.info("Applying transformer object on training dataframe and testing dataframe.")
+            features_train_arr=transformer.fit_transform(features_train_df)
+            features_test_arr=transformer.transform(features_test_df)
+            
+            logging.info('Normalizing the target column')
+            target_transformer = StandardScaler()  
+            target_train_arr = target_transformer.fit_transform(target_train_df)
+            target_test_arr = target_transformer.transform(target_test_df)
+            
+            logging.info('Concatenate the results')
+            train_arr = np.c_[features_train_arr, target_train_arr]
+            test_arr = np.c_[features_test_arr, target_test_arr]
+            logging.info(f"Saved transformer objects.")
+            save_object(file_path=self.data_transformation_config.transformer_obj_file_path, obj=transformer)
+            save_object(file_path=self.data_transformation_config.target_transformer_obj_file_path, obj=target_transformer)
             
             return (
                 train_arr,

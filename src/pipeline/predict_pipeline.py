@@ -1,23 +1,30 @@
 import sys
 import pandas as pd
-from src.exception import CustomException
-from src.utils import load_object
 import os
 
+from src.logger import logging
+from src.exception import CustomException
+from src.utils import load_object
 class PredictPipeline:
     def __init__(self):
         pass
     
     def predict(self, features):
         try:
+            logging.info("Loading artifacts")
             model_path = os.path.abspath('artifacts/model.pkl')
             transformer_path = os.path.abspath('artifacts/transformer.pkl')
+            target_transformer_path = os.path.abspath('artifacts/target_transformer.pkl')
             model = load_object(file_path=model_path)
             transformer = load_object(file_path=transformer_path)
+            target_transformer = load_object(file_path=target_transformer_path)
+            
+            logging.info('Data transformation')
             data_scaled = transformer.transform(features)
-            print(data_scaled)
+            
+            logging.info('Make Predictions')
             predictions = model.predict(data_scaled).reshape(-1, 1)
-            predictions = transformer.named_transformers_['num_pipeline'].inverse_transform(predictions).flatten()
+            predictions = target_transformer.inverse_transform(predictions).flatten()
             return predictions
         except Exception as e:
             raise CustomException(e, sys)
@@ -51,9 +58,8 @@ class CustomData:
             raise CustomException(e, sys)
         
 if __name__ == '__main__':
-    data = CustomData(1360, 5, 4, 3, 1970, 'Downtown', 'Excellent', 'No')
+    data = CustomData(4076, 5, 4, 2, 1985, 'Rural', 'Excellent', 'No')
     features = data.get_data_as_data_frame()
-    print(features.shape)
     obj = PredictPipeline()
     prediction = obj.predict(features)
     print(f'The price is: {prediction}')
