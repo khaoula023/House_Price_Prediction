@@ -1,4 +1,4 @@
-# House_Price_Prediction
+# House Price Prediction
 
 This project implements a house price prediction model using ensemble learning techniques, specifically Bagging with multiple Support Vector Regression (SVR) models. The objective is to create a robust and accurate model to predict house prices based on various features.
 
