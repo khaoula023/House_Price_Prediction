@@ -1,126 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="static/style.css" />
-  <title>House Price Predictor</title>
-</head>
-<body>
-  <div class="login">
-    <h1>House Price Predictor</h1>
-    <form action="{{ url_for('predict_datapoint') }}" method="post">
-      <div class="mb-3">
-        <label class="form-label" for="Area">Area</label>
-        <input
-          id="Area"
-          class="form-control"
-          type="number"
-          name="Area"
-          placeholder="Enter The Area"
-          min="500"
-          max="5000"
-          value="{{ request.form.get('Area', '') }}"
-          required
-        />
-      </div>
-      <div class="flex-group">
-        <div class="small-input">
-          <label class="form-label" for="Bedrooms">Bedrooms</label>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="static/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>House Price Predictor</title>
+  </head>
+  <body>
+    <div class="login">
+      <h1>House Price Predictor</h1>
+      <form action="{{ url_for('predict_datapoint') }}" method="post">
+        <div class="mb-3">
+          <label class="form-label" for="Area">Area</label>
           <input
-            id="Bedrooms"
+            id="Area"
             class="form-control"
             type="number"
-            name="Bedrooms"
-            placeholder="Bedrooms"
-            min="1"
-            max="5"
-            value="{{ request.form.get('Bedrooms', '') }}"
+            name="Area"
+            placeholder="Enter The Area"
+            min="500"
+            max="5000"
             required
           />
         </div>
-        <div class="small-input">
-          <label class="form-label" for="Bathrooms">Bathrooms</label>
+        <div class="flex-group">
+          <div class="small-input">
+            <label class="form-label" for="Bedrooms">Bedrooms</label>
+            <input
+              id="Bedrooms"
+              class="form-control"
+              type="number"
+              name="Bedrooms"
+              placeholder="Bedrooms"
+              min="1"
+              max="5"
+              required
+            />
+          </div>
+          <div class="small-input">
+            <label class="form-label" for="Bathrooms">Bathrooms</label>
+            <input
+              id="Bathrooms"
+              class="form-control"
+              type="number"
+              name="Bathrooms"
+              placeholder="Bathrooms"
+              min="1"
+              max="4"
+              required
+            />
+          </div>
+          <div class="small-input">
+            <label class="form-label" for="Floors">Floors</label>
+            <input
+              id="Floors"
+              class="form-control"
+              type="number"
+              name="Floors"
+              placeholder="Floors"
+              min="1"
+              max="4"
+              required
+            />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="YearBuilt">Year Built</label>
           <input
-            id="Bathrooms"
+            id="YearBuilt"
             class="form-control"
             type="number"
-            name="Bathrooms"
-            placeholder="Bathrooms"
-            min="1"
-            max="4"
-            value="{{ request.form.get('Bathrooms', '') }}"
+            name="YearBuilt"
+            placeholder="The Year Built"
+            min="1900"
+            max="2024"
             required
           />
         </div>
-        <div class="small-input">
-          <label class="form-label" for="Floors">Floors</label>
-          <input
-            id="Floors"
-            class="form-control"
-            type="number"
-            name="Floors"
-            placeholder="Floors"
-            min="1"
-            max="4"
-            value="{{ request.form.get('Floors', '') }}"
-            required
-          />
+        <div class="mb-3">
+          <label class="form-label" for="Location">Location</label>
+          <select id="Location" class="form-control" name="Location" required>
+            <option class="placeholder" selected disabled value="">
+              Select The Location
+            </option>
+            <option value="Downtown">Downtown</option>
+            <option value="Suburban">Suburban</option>
+            <option value="Urban">Urban</option>
+            <option value="Rural">Rural</option>
+          </select>
         </div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="YearBuilt">Year Built</label>
-        <input
-          id="YearBuilt"
-          class="form-control"
-          type="number"
-          name="YearBuilt"
-          placeholder="The Year Built"
-          min="1900"
-          max="2024"
-          value="{{ request.form.get('YearBuilt', '') }}"
-          required
-        />
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="Location">Location</label>
-        <select id="Location" class="form-control" name="Location" required>
-          <option class="placeholder" disabled value="">
-            Select The Location
-          </option>
-          <option value="Downtown" {% if request.form.get('Location') == 'Downtown' %} selected {% endif %}>Downtown</option>
-          <option value="Suburban" {% if request.form.get('Location') == 'Suburban' %} selected {% endif %}>Suburban</option>
-          <option value="Urban" {% if request.form.get('Location') == 'Urban' %} selected {% endif %}>Urban</option>
-          <option value="Rural" {% if request.form.get('Location') == 'Rural' %} selected {% endif %}>Rural</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="Condition">Condition</label>
-        <select id="Condition" class="form-control" name="Condition" required>
-          <option class="placeholder" disabled value="">
-            Select Condition
-          </option>
-          <option value="Excellent" {% if request.form.get('Condition') == 'Excellent' %} selected {% endif %}>Excellent</option>
-          <option value="Good" {% if request.form.get('Condition') == 'Good' %} selected {% endif %}>Good</option>
-          <option value="Fair" {% if request.form.get('Condition') == 'Fair' %} selected {% endif %}>Fair</option>
-          <option value="Poor" {% if request.form.get('Condition') == 'Poor' %} selected {% endif %}>Poor</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="Garage">Garage</label>
-        <select id="Garage" class="form-control" name="Garage" required>
-          <option class="placeholder" disabled value="">
-            Select Garage
-          </option>
-          <option value="No" {% if request.form.get('Garage') == 'No' %} selected {% endif %}>No</option>
-          <option value="Yes" {% if request.form.get('Garage') == 'Yes' %} selected {% endif %}>Yes</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <button class="btn" type="submit">Predict The Price</button>
-      </div>
-    </form>
-    <h2>It Costs {{ results }} $</h2>
-  </div>
-</body>
+        <div class="mb-3">
+          <label class="form-label" for="Condition">Condition</label>
+          <select id="Condition" class="form-control" name="Condition" required>
+            <option class="placeholder" selected disabled value="">
+              Select Condition
+            </option>
+            <option value="Excellent">Excellent</option>
+            <option value="Good">Good</option>
+            <option value="Fair">Fair</option>
+            <option value="Poor">Poor</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="Garage">Garage</label>
+          <select id="Garage" class="form-control" name="Garage" required>
+            <option class="placeholder" selected disabled value="">
+              Select Garage
+            </option>
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <button class="btn" type="submit">Predict The Price</button>
+        </div>
+      </form>
+      <h2>{% if results %}It costs {{ results }} ${% endif %}</h2>
+    </div>
+  </body>
 </html>
